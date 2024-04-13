@@ -1,6 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
 
 /* Provide sufficient contrast against white background */
+
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "~bootstrap-icons/font/bootstrap-icons.css";
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
 a {
   color: #0366d6;
 }
@@ -11,6 +16,10 @@ a {
 
 code {
   color: #e01a76;
+}
+
+body {
+  height: 100vh;
 }
 
 .btn-primary {

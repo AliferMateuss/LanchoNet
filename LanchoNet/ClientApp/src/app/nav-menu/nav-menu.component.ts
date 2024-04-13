@@ -6,13 +6,36 @@ import { Component } from '@angular/core';
   styleUrls: ['./nav-menu.component.css']
 })
 export class NavMenuComponent {
-  isExpanded = false;
+  menuAberto: boolean = false;
+  subMenuAberto: SubMenuAberto = {
+    cadastros: false,
+    movimentos: false
+  };
 
-  collapse() {
-    this.isExpanded = false;
+  alternarMenu() {
+    this.menuAberto = !this.menuAberto;
   }
 
-  toggle() {
-    this.isExpanded = !this.isExpanded;
+  fecharMenu() {
+    this.menuAberto = false;
+  }
+
+
+  toggleSubMenu(subMenu: SubMenuKey) {
+    this.subMenuAberto[subMenu] = !this.subMenuAberto[subMenu];
+
+    //const collapseElement = document.getElementById(subMenu) as HTMLElement;
+
+    //if (this.subMenuAberto[subMenu]) {
+    //  collapseElement.classList.add('show');
+    //} else {
+    //  collapseElement.classList.remove('show');
+    //}
   }
 }
+interface SubMenuAberto {
+  movimentos: boolean;
+  cadastros: boolean;
+}
+
+type SubMenuKey = keyof SubMenuAberto;
