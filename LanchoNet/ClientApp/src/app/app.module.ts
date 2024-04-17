@@ -10,6 +10,12 @@ import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { PessoasComponent } from './pessoas/pessoas.component';
+import { provideEnvironmentNgxMask, NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 @NgModule({
   declarations: [
@@ -23,8 +29,15 @@ import { PessoasComponent } from './pessoas/pessoas.component';
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
+    BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
+    NgxMaskDirective,
+    NgxMaskPipe,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    ModalModule.forRoot(),
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
@@ -32,7 +45,7 @@ import { PessoasComponent } from './pessoas/pessoas.component';
       { path: 'pessoas', component: PessoasComponent },
     ])
   ],
-  providers: [],
+  providers: [provideEnvironmentNgxMask()],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
