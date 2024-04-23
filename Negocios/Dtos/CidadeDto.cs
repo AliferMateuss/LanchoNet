@@ -23,5 +23,5 @@ public partial class CidadeDto
 
     public virtual ICollection<EnderecoDto>? Enderecos { get; set; } = new List<EnderecoDto>();
 
-    public virtual EstadoDto? IdestadoNavigation { get; set; }
+    public virtual EstadoDto? Estado { get; set; }
 }

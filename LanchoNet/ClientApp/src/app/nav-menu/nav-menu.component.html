@@ -1,7 +1,7 @@
 <div class="top-bar">
 
 </div>
-<div class="overlay" [ngClass]="{ 'menu-aberto': menuAberto, 'menu-fechado': !menuAberto }"></div>
+<div class="overlay" (click)="fecharMenu()"  [ngClass]="{ 'menu-aberto': menuAberto, 'menu-fechado': !menuAberto }"></div>
 <div class="menu" [ngClass]="{ 'menu-aberto': menuAberto, 'menu-fechado': !menuAberto }">
   <ul class="nav flex-column">
     <li class="nav-item"

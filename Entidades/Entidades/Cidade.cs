@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using NpgsqlTypes;
 
 namespace Entidades.Entidades;
 
+[Table("Cidade")]
 public partial class Cidade
 {
     public long Id { get; set; }
@@ -19,9 +21,10 @@ public partial class Cidade
     public double? Longitude { get; set; }
     public short? CodTom { get; set; }
 
-    public long? Idestado { get; set; }
+    [ForeignKey("Estado")]
+    public long? EstadoId { get; set; }
 
     public virtual ICollection<Endereco>? Enderecos { get; set; } = new List<Endereco>();
 
-    public virtual Estado? IdestadoNavigation { get; set; }
+    public virtual Estado? Estado { get; set; }
 }

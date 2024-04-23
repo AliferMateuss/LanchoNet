@@ -16,6 +16,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -31,12 +33,14 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     HttpClientModule,
     BrowserAnimationsModule,
     FormsModule,
+    CommonModule,
     ReactiveFormsModule,
     NgxMaskDirective,
     NgxMaskPipe,
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
+    NgSelectModule,
     ModalModule.forRoot(),
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },

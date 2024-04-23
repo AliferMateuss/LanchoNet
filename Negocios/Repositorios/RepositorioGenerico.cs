@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Entidades.Contexto;
+using Entidades.Entidades;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -8,19 +9,19 @@ namespace Entidades.Repositorios
 
     public class RepositorioGenerico<TEntity, TDto> where TEntity : class
     {
-        public readonly PostgresContexto _context;
+        public readonly LanchoNetContext _context;
         public readonly DbSet<TEntity> _dbSet;
         public IMapper _mapper;
         public TEntity _entity;
         public TDto _dto;
 
-        public RepositorioGenerico(PostgresContexto context)
+        public RepositorioGenerico(LanchoNetContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _dbSet = _context.Set<TEntity>();
         }
 
-        public RepositorioGenerico() : this(new PostgresContexto()) { }
+        public RepositorioGenerico() : this(new LanchoNetContext()) { }
 
         public IEnumerable<TDto> BuscaTodos()
         {

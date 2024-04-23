@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { ChangeDetectorRef, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { GenericValidator } from '../Validators/validator.component';
@@ -39,6 +39,9 @@ export class PessoasComponent implements OnInit {
   public formPessoa!: FormGroup;
   public formEndereco!: FormGroup;
   public Endereco: Endereco | null = null;
+  public estados: any[] | null = null;
+  public cidades: any[] | null = null;
+  // #region Variáveis de tela
   documentoOK: boolean = true;
   documento: string = '';
   documentoPassou: boolean = false;
@@ -48,9 +51,11 @@ export class PessoasComponent implements OnInit {
   tipoPessoa: boolean = false;
   dataSource!: MatTableDataSource<Endereco>;
   pageIndex!: number;
-  pageSize!: number;
+  pageSize: number = 10;
   displayedColumns: string[] = ['nome', 'bairro', 'cidade', 'Acoes'];
+  idEstado: number | null = null;
 
+  // #endregion 
   @ViewChild('paginator') paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -58,6 +63,7 @@ export class PessoasComponent implements OnInit {
     private cdr: ChangeDetectorRef, private validator: GenericValidator, private modalService: BsModalService) { }
 
   ngOnInit(): void {
+    document.body.style.overflow = "hidden";
   }
 
   validarDocumento() {
@@ -235,16 +241,69 @@ export class PessoasComponent implements OnInit {
     }
   }
 
+  selecionarEstado($event: any) {
+    if ($event) {
+      this.formEndereco.get('idCidade')?.clearValidators()
+      this.formEndereco.get('idCidade')?.updateValueAndValidity();
+      this.formEndereco.get('idCidade')?.enable();
+      this.formEndereco.get('idCidade')?.setValidators(Validators.required);
+      this.formEndereco.get('idCidade')?.updateValueAndValidity();
+      this.cdr.detectChanges();
+    } else {
+      this.formEndereco.get('idCidade')?.clearValidators()
+      this.formEndereco.get('idCidade')?.updateValueAndValidity();
+      this.formEndereco.get('idCidade')?.disable();
+      this.formEndereco.get('idCidade')?.updateValueAndValidity();
+      this.cdr.detectChanges();
+    }
+   
+  }
+     
   adicionarEndereco() {
     this.Endereco = new Endereco();
     this.formEndereco = new FormGroup({
-      idCidade: new FormControl(this.Endereco.idCidade, [Validators.required]),
+      idCidade: new FormControl({ value:this.Endereco.idCidade, disabled: true }, [Validators.required]),
       cep: new FormControl(this.Endereco.cep, [Validators.required]),
       rua: new FormControl(this.Endereco.rua, [Validators.required]),
       numero: new FormControl(this.Endereco.numero, [Validators.required]),
       complemento: new FormControl(this.Endereco.complemento),
       bairro: new FormControl(this.Endereco.bairro, [Validators.required]),
+      estado: new FormControl(this.idEstado, [Validators.required]),
     });
+    this.pageIndex = 1;
+    this.estados = null;
+    this.idEstado = null;
+    this.carregarEstados();
+  }
+
+
+  carregarEstados() {
+    const params = new HttpParams()
+      .set('pagina', this.pageIndex.toString())
+      .set('tamanhoPagina', this.pageSize.toString());
+    this.http.get<any[]>(this.baseUrl + 'api/Estado/BuscaPaginado', { params }).subscribe(data => {
+      console.log(data);
+      if (this.estados == null || this.estados == undefined)
+        this.estados = data;
+      else
+        this.estados = this.estados.concat(data).sort(x => x.uf);
+
+      console.log(this.estados);
+      this.pageIndex++;
+      this.cdr.detectChanges();
+    }, error => console.error(error));
+  }
+
+  pesquisarEstados1($event: any) {
+    if ($event.term.length <= 3)
+      return;
+
+    this.http.get<any[]>(this.baseUrl + 'api/Cidade/BuscaCidadesPorEstadoETermo?estadoId=' + this.idEstado?.toString() + "&termo=" + $event.term.toString()).subscribe(data => {
+      console.log(data);
+      this.cidades = data;
+      this.cdr.detectChanges();
+    }, error => console.error(error));
+
   }
 
   alterarEndereco(endereco: Endereco) {
@@ -256,6 +315,7 @@ export class PessoasComponent implements OnInit {
       numero: new FormControl(this.Endereco.numero, [Validators.required]),
       complemento: new FormControl(this.Endereco.complemento),
       bairro: new FormControl(this.Endereco.bairro, [Validators.required]),
+      estado: new FormControl(this.idEstado, [Validators.required]),
     });
   }
 
@@ -266,6 +326,13 @@ export class PessoasComponent implements OnInit {
     }
     this.dataSource = new MatTableDataSource<Endereco>(this.pessoa.enderecos);
     this.cdr.detectChanges();
+  }
+
+  selecionarCidade($event: any) {
+    const cidade = this.cidades?.find(c => c.id === $event);
+
+    if (this.Endereco != null || this.Endereco != undefined)
+        this.Endereco.cidadeNome = cidade.nome;
   }
 
   salvarEndereco(novo: boolean) {
@@ -291,22 +358,47 @@ export class PessoasComponent implements OnInit {
       if (novo) {
         this.Endereco = new Endereco();
       } else {
-        //$("#modalEndereco").toggle();
-        //$('.modal-backdrop').toggle();]
-        this.modalService.hide('modalEndereco');
-        this.dataSource = new MatTableDataSource<Endereco>(this.pessoa.enderecos);
-        this.cdr.detectChanges();
+        var botao = document.querySelector('#cancelarModal') as HTMLFormElement;
+        botao.click();
       }
     } else {
       console.log("Npassou")
       console.log(this.Endereco)
       console.log(this.formEndereco)
       Object.keys(this.formEndereco.controls).forEach((campo) => {
-        console.log(campo ,this.formPessoa.get(campo)?.valid)
+        console.log(campo, this.formPessoa.get(campo)?.valid)
       });
       const form = document.querySelector('.needs-validation.endereco') as HTMLFormElement;
       form.classList.add('was-validated');
+
+      if (this.idEstado == null) {
+        var estado = document.querySelector('#estado') as HTMLFormElement;
+        estado.classList.add('is-invalid');
+        var selectEstado = document.querySelector('.customEstado.ng-select.is-invalid.ng-select-single .ng-select-container') as HTMLFormElement;
+        selectEstado.style.borderColor = 'var(--bs-form-invalid-color)';
+      } else {
+        var cidade = document.querySelector('#estado') as HTMLFormElement;
+        cidade.classList.remove('is-invalid');
+        var select = document.querySelector('.customEstado.ng-select.ng-select-single .ng-select-container') as HTMLFormElement;
+        select.style.borderColor = '#ccc';
+      }
+
+      if (this.Endereco?.idCidade == null) {
+        const form = document.querySelector('#cidade') as HTMLFormElement;
+        form.classList.add('is-invalid');
+        const select = document.querySelector('.customCidade.ng-select.is-invalid.ng-select-single .ng-select-container') as HTMLFormElement;
+        select.style.borderColor = 'var(--bs-form-invalid-color)';
+      } else {
+        const form = document.querySelector('#cidade') as HTMLFormElement;
+        form.classList.remove('is-invalid');
+        const select = document.querySelector('.customCidade.ng-select.ng-select-single .ng-select-container') as HTMLFormElement;
+        select.style.borderColor = '#ccc';
+      }
     }
+
+    this.dataSource = new MatTableDataSource<Endereco>(this.pessoa.enderecos);
+    this.cdr.detectChanges();
+
   }
 
   fecharModal() {
@@ -345,6 +437,7 @@ export class PessoasComponent implements OnInit {
     this.pessoa.enderecos = [];
   }
 
+  // #region Gettes Forms
   get nome() { return this.formPessoa.get('nome')!; }
   get dataNascimento() { return this.formPessoa.get('dataNascimento')!; }
   get telefone1() { return this.formPessoa.get('telefone1')!; }
@@ -383,7 +476,7 @@ export class PessoasComponent implements OnInit {
   get bairro() {
     return this.formEndereco.get('bairro')!;
   }
-
+  // #endregion
 }
 
 class Pessoa {
@@ -414,4 +507,5 @@ class Endereco {
   public numero: string | null = null;
   public complemento: string | null = null;
   public bairro: string | null = null;
+  public cidadeNome: string | null = null;
 }

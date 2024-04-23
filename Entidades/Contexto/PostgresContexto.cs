@@ -18,8 +18,8 @@ namespace Entidades.Contexto
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Pessoa> Pessoas { get; set; }
         public DbSet<TipoPagamento> TipoPagamento { get; set; }
-        public DbSet<Estado> Estados { get; set; }
-        public DbSet<Cidade> Cidades { get; set; }
+        public DbSet<Estado> Estado { get; set; }
+        public DbSet<Cidade> Cidade { get; set; }
         public DbSet<Endereco> Enderecos { get; set; }
         public DbSet<Venda> Vendas { get; set; }
         public DbSet<ItensVenda> ItensVendas { get; set; }

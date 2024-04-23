@@ -152,7 +152,7 @@
         </div>
       </div>
       <h5>Endereços:</h5>
-      <div class="container-fluid border border-dark rounded-4" style="margin: 10px 0px 10px 0px; padding-bottom: 10px;">
+      <div class="container-fluid border border-dark rounded-4" style="margin: 10px 0px 10px 0px; padding-bottom: 10px; max-height: 300px; overflow-y: auto;">
         <div class="col-md-12" *ngIf="pessoa">
           <mat-table class='mat-elevation-z8' [dataSource]="dataSource" aria-labelledby="tableLabel" matSort>
             <ng-container matColumnDef="nome">
@@ -167,7 +167,7 @@
 
             <ng-container matColumnDef="cidade">
               <mat-header-cell *matHeaderCellDef mat-sort-header> Cidade </mat-header-cell>
-              <mat-cell *matCellDef="let endereco"> {{ endereco.idCidade }} </mat-cell>
+              <mat-cell *matCellDef="let endereco"> {{ endereco.cidadeNome }} </mat-cell>
             </ng-container>
 
             <ng-container matColumnDef="Acoes">
@@ -178,7 +178,7 @@
               </mat-cell>
             </ng-container>
 
-            <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+            <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" style="background-color: white;"></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
           </mat-table>
           <div class="col-12" style="padding-top: 15px;">
@@ -188,9 +188,9 @@
         </div>
       </div>
       <div class="col-md-8 mx-auto" style="display: flex; justify-content: center;">
-          <button class="btn btn-danger me-4" type="button">Cadastrar Pessoa</button>
-          <button class="btn btn-primary me-4" type="button">Teste</button>
-          <button class="btn btn-primary" type="submit">Cadastrar Pessoa</button>
+        <button class="btn btn-danger me-4" type="button">Cancelar</button>
+        <button class="btn btn-primary me-4" type="button">Teste</button>
+        <button class="btn btn-primary" type="submit">Cadastrar Pessoa</button>
       </div>
     </div>
 
@@ -204,19 +204,31 @@
         <button type="button" (click)="fecharModal()" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form *ngIf="Endereco" class="row g-3 needs-validation endereco" novalidate [formGroup]="formEndereco" #formDir="ngForm">
+        <form *ngIf="Endereco" class="row g-3 needs-validation endereco" [formGroup]="formEndereco" #formDir="ngForm">
           <div [@slideLeftToRight]>
             <div class="row">
               <div class="col-md-3">
                 <label for="estado" class="form-label"> Estado </label>
-                <input type="text" class="form-control" id="estado" required>
+                <ng-select class="customEstado"  name="estado" [(ngModel)]="idEstado" [virtualScroll]="true" id="estado"
+                           (scrollToEnd)="carregarEstados()" (change)="selecionarEstado($event)" formControlName="estado" required>
+                  <ng-option *ngFor="let estado of estados" [value]="estado.id">{{ estado.uf + " - " + estado.nome }}</ng-option>
+                </ng-select>
                 <div class="invalid-feedback">
                   Campo obrigatório
                 </div>
               </div>
               <div class="col-md-3">
                 <label for="cidade" class="form-label">Cidade</label>
-                <input type="text" class="form-control" id="cidade" [(ngModel)]="Endereco.idCidade" formControlName="idCidade" required>
+                <ng-select class="customCidade"  name="cidade" [(ngModel)]="Endereco.idCidade" formControlName="idCidade"
+                           [searchable]="true"
+                           (search)="pesquisarEstados1($event)"
+                           (change)="selecionarCidade($event)"
+                           placeholder="Digite ao menos 4 letras"
+                           notFoundText="Não foram encontradas cidades"
+                           required
+                           id="cidade">
+                  <ng-option *ngFor="let cidade of cidades" [value]="cidade.id">{{ cidade.nome }}</ng-option>
+                </ng-select>
                 <div class="invalid-feedback">
                   Campo obrigatório
                 </div>
@@ -262,9 +274,9 @@
           </div>
         </form>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" (click)="fecharModal()" id="cancelarModal" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
           <button type="button" (click)="salvarEndereco(true)" class="btn btn-primary">Salvar/Novo</button>
-          <button type="button" (click)="salvarEndereco(false)" data-bs-dismiss="modal" class="btn btn-primary">Salvar</button>
+          <button type="button" (click)="salvarEndereco(false)" class="btn btn-primary">Salvar</button>
         </div>
       </div>
     </div>

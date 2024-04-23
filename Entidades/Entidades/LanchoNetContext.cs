@@ -25,7 +25,7 @@ public partial class LanchoNetContext : DbContext
 
     public virtual DbSet<Endereco> Enderecos { get; set; }
 
-    public virtual DbSet<Estado> Estados { get; set; }
+    public virtual DbSet<Estado> Estado { get; set; }
 
     public virtual DbSet<GrupoUsuario> GrupoUsuarios { get; set; }
 
@@ -58,22 +58,22 @@ public partial class LanchoNetContext : DbContext
 
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
-                .HasColumnName("id");
+                .HasColumnName("Id");
             entity.Property(e => e.CodTom)
                 .HasDefaultValueSql("0")
                 .HasComment("Código TOM (SEFAZ)")
-                .HasColumnName("cod_tom");
-            entity.Property(e => e.Ibge).HasColumnName("ibge");
-            entity.Property(e => e.Idestado).HasColumnName("idestado");
-            entity.Property(e => e.LatLon).HasColumnName("lat_lon");
-            entity.Property(e => e.Latitude).HasColumnName("latitude");
-            entity.Property(e => e.Longitude).HasColumnName("longitude");
+                .HasColumnName("CodTom");
+            entity.Property(e => e.Ibge).HasColumnName("Ibge");
+            entity.Property(e => e.EstadoId).HasColumnName("IdEstado");
+            entity.Property(e => e.LatLon).HasColumnName("LatLon");
+            entity.Property(e => e.Latitude).HasColumnName("Latitude");
+            entity.Property(e => e.Longitude).HasColumnName("Longitude");
             entity.Property(e => e.Nome)
                 .HasMaxLength(120)
-                .HasColumnName("nome");
+                .HasColumnName("Nome");
 
-            entity.HasOne(d => d.IdestadoNavigation).WithMany(p => p.Cidades)
-                .HasForeignKey(d => d.Idestado)
+            entity.HasOne(d => d.Estado).WithMany(p => p.Cidades)
+                .HasForeignKey(d => d.EstadoId)
                 .HasConstraintName("fk_cidade_estado");
         });
 
@@ -166,14 +166,14 @@ public partial class LanchoNetContext : DbContext
 
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
-                .HasColumnName("id");
-            entity.Property(e => e.Ibge).HasColumnName("ibge");
+                .HasColumnName("Id");
+            entity.Property(e => e.Ibge).HasColumnName("Ibge");
             entity.Property(e => e.Nome)
                 .HasMaxLength(60)
-                .HasColumnName("nome");
+                .HasColumnName("Nome");
             entity.Property(e => e.Uf)
                 .HasMaxLength(2)
-                .HasColumnName("uf");
+                .HasColumnName("Uf");
         });
 
         modelBuilder.Entity<GrupoUsuario>(entity =>

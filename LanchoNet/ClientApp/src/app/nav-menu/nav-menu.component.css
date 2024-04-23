@@ -138,3 +138,7 @@ html {
     stroke-dasharray: 20 300;
     stroke-dashoffset: -32.42;
   }
+
+.nav-item:hover{
+    background-color: #404040;
+}
