@@ -13,9 +13,9 @@ namespace Negocios.Negocios
         }
 
 
-        public List<EstadoDto> BuscaPaginado(int pagina, int tamanho)
+        public List<EstadoDto> RecuperaEstados()
         {
-            return EstadoRepositorio.GetPaginado(pagina, tamanho);
+            return EstadoRepositorio.RecuperaEstados();
         }
     }
 }

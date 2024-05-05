@@ -21,6 +21,12 @@ h5 {
   border-color: var(--bs-form-invalid-color) !important;
 }
 
-.mat-mdc-header-row{
-    z-index:0 !important;
+.was-validated.form-control.is-valid:focus {
+  border-color: var(--bs-form-valid-border-color);
+  box-shadow: none;
+}
+
+.was-validated.form-control:focus {
+  border-color: var(--bs-form-valid-border-color);
+  box-shadow: none;
 }

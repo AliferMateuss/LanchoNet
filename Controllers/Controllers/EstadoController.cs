@@ -20,10 +20,10 @@ namespace Controllers.Controllers
             EstadoNegocio = new EstadoNegocio();
         }
 
-        [HttpGet("BuscaPaginado")]
-        public List<EstadoDto> BuscaPaginado( int pagina, int tamanhoPagina)
+        [HttpGet("RecuperaEstados")]
+        public List<EstadoDto> RecuperaEstados()
         {
-            return EstadoNegocio.BuscaPaginado(pagina, tamanhoPagina);
+            return EstadoNegocio.RecuperaEstados();
         }
     }
 }

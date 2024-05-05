@@ -20,5 +20,13 @@ namespace Negocios.Negocios
         {
             return CidadeRepositorio.GetCidade(estadoId, termo);
         }
+
+
+
+
+        public CidadeDto RecuperaCidadePorId(long id)
+        {
+            return CidadeRepositorio.BuscaPorId(id);
+        }
     }
 }

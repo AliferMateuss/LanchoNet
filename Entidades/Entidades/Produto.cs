@@ -12,6 +12,8 @@ public partial class Produto
     public int Quantidade { get; set; }
 
     public double Preco { get; set; }
+    public double PrecoCompra { get; set; }
+    public byte[] Imagem { get; set; }
 
     public virtual ICollection<ItensCompra>? ItensCompras { get; set; }
 

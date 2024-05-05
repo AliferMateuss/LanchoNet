@@ -45,6 +45,14 @@ namespace Entidades.Repositorios
             return _mapper.Map<TEntity, TDto>(entity);
         }
 
+        public bool VerificaSeExiste(object id)
+        {
+            MontaMapperEntidadeDto();
+            var entity = _dbSet.Find(id);
+            
+            return entity != null;
+        }
+
         public TEntity? BuscaPorIdEntity(object id)
         {
             return _dbSet.Find(id);
@@ -65,15 +73,24 @@ namespace Entidades.Repositorios
             _dbSet.Add(entityToAdd);
         }
 
+        public long SalvarRetornandoId(TDto dto)
+        {
+            var entityToAdd = _mapper.Map<TEntity>(dto);
+            _dbSet.Add(entityToAdd);
+            Commit();
+            return (long)entityToAdd.GetType().GetProperty("Id").GetValue(entityToAdd);
+        }
+
         public void Atualizar(TDto dto)
         {
             MontaMapperDtoEntidade();
             var entityToUpdate = _mapper.Map<TDto, TEntity>(dto);
 
-            var existingEntity = _dbSet.Find(entityToUpdate.GetType().GetProperty("Id").GetValue(entityToUpdate));
-            if (existingEntity != null)
+            var entidade = _dbSet.Find(entityToUpdate.GetType().GetProperty("Id").GetValue(entityToUpdate));
+            if (entidade != null)
             {
-                _dbSet.Update(_mapper.Map(dto, existingEntity));
+                //_dbSet.Update(_mapper.Map(dto, entityToUpdate));
+                _context.Entry(entidade).CurrentValues.SetValues(entityToUpdate);
                 Commit();
             }
         }

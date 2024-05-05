@@ -1,15 +1,15 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule, importProvidersFrom } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
-
+import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
 import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
-import { PessoasComponent } from './pessoas/pessoas.component';
+import { PessoasComponent } from './pessoas/Cadastro/pessoas.component';
 import { provideEnvironmentNgxMask, NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTableModule } from '@angular/material/table';
@@ -18,6 +18,10 @@ import { MatSortModule } from '@angular/material/sort';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { CommonModule } from '@angular/common';
+import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { ListaPessoasComponent } from './pessoas/Consulta/lista-pessoas.component';
+import { CadastroProdutosComponent } from './produtos/cadastro-produtos/cadastro-produtos.component';
+import { ListaProdutosComponent } from './produtos/lista-produtos/lista-produtos.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +30,10 @@ import { CommonModule } from '@angular/common';
     HomeComponent,
     CounterComponent,
     FetchDataComponent,
-    PessoasComponent
+    PessoasComponent,
+    ListaPessoasComponent,
+    CadastroProdutosComponent,
+    ListaProdutosComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -41,15 +48,26 @@ import { CommonModule } from '@angular/common';
     MatPaginatorModule,
     MatSortModule,
     NgSelectModule,
+    CurrencyMaskModule,
+    MatOptionModule,
+    MatNativeDateModule,
     ModalModule.forRoot(),
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
+      { path: 'pessoas/:id?', component: PessoasComponent },
       { path: 'pessoas', component: PessoasComponent },
+      { path: 'listaPessoas', component: ListaPessoasComponent },
+      { path: 'listaProdutos', component: ListaProdutosComponent },
+      { path: 'produtos', component: CadastroProdutosComponent },
+      { path: 'produtos/:id?', component: CadastroProdutosComponent },
     ])
   ],
-  providers: [provideEnvironmentNgxMask()],
+  providers: [provideEnvironmentNgxMask(),
+  { provide: LOCALE_ID, useValue: 'pt- BR' },
+    { provide: DEFAULT_CURRENCY_CODE, useValue: 'BRL' },
+    importProvidersFrom(MatNativeDateModule)],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

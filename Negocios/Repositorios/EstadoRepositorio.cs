@@ -6,19 +6,14 @@ namespace Negocios.Repositorios
     public class EstadoRepositorio : RepositorioGenerico<Estado, EstadoDto>
     {
 
-        public List<EstadoDto> GetPaginado(int pagina, int tamanhoPagina)
+        public List<EstadoDto> RecuperaEstados()
         {
-            var query = _context.Estado.AsQueryable();
-
-            var resultadosPaginados = query.Skip((pagina - 1) * tamanhoPagina)
-                                           .Take(tamanhoPagina)
-                                           .ToList();
-            var totalResultados = query.Count();
+            var resultados = _context.Estado.ToList();
 
 
             MontaMapperEntidadeDto();
 
-            return resultadosPaginados.Select(x => _mapper.Map<EstadoDto>(x)).ToList();
+            return resultados.Select(x => _mapper.Map<EstadoDto>(x)).ToList();
         }
     }
 }

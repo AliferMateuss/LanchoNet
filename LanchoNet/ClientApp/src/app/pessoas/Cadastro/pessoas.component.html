@@ -61,62 +61,64 @@
           <div class="input-group">
             <input type="text" class="form-control" id="cpf" [(ngModel)]="pessoa.cpf" mask="CPF_CNPJ" aria-describedby="inputGroupPrepend" formControlName="cpf">
           </div>
+          <div *ngIf="cpf.value && cpf.errors && cpf.errors.cpfNotValid" class="invalid-feedback was-validated">
+            CPF inválido
+          </div>
         </div>
         <div class="col-md-3" *ngIf="documento.length === 11" [@slideLeftToRight]>
           <label for="rg" class="form-label">RG</label>
-          <div class="input-group">
-            <input type="text" class="form-control" id="rg" [(ngModel)]="pessoa.rg" aria-describedby="inputGroupPrepend" formControlName="rg">
+          <input type="text" class="form-control" id="rg" [(ngModel)]="pessoa.rg" aria-describedby="inputGroupPrepend" formControlName="rg">
+          <div *ngIf="formPessoa.get('rg')?.errors?.rgInvalid" style="color:var(--bs-form-invalid-color);" class="invalid-feedback rg">
+            RG inválido
           </div>
         </div>
         <div class="col-md-3" *ngIf="documento.length === 14" [@slideLeftToRight]>
           <label for="cnpj" class="form-label">CNPJ</label>
-          <div class="input-group">
-            <input type="text" class="form-control" id="cnpj" [(ngModel)]="pessoa.cnpj" mask="CPF_CNPJ" aria-describedby="inputGroupPrepend" formControlName="cnpj">
-          </div>
+          <input type="text" class="form-control" id="cnpj" [(ngModel)]="pessoa.cnpj" mask="CPF_CNPJ" aria-describedby="inputGroupPrepend" formControlName="cnpj">
         </div>
         <div class="col-md-3" *ngIf="documento.length === 14" [@slideLeftToRight]>
           <label for="ie" class="form-label">Inscrição Estadual</label>
-          <div class="input-group">
-            <input type="text" class="form-control" id="ie" aria-describedby="inputGroupPrepend" [(ngModel)]="pessoa.ie" formControlName="ie">
+          <input type="text" class="form-control" id="ie" aria-describedby="inputGroupPrepend" [(ngModel)]="pessoa.ie" formControlName="ie">
+          <div *ngIf="formPessoa.get('ie')?.errors?.IEInvalida" style="color:var(--bs-form-invalid-color);" class="invalid-feedback ie">
+            Inscrição estadual inválida
           </div>
         </div>
         <div class="col-md-3" *ngIf="documento.length === 14 && cliente" [@slideLeftToRight]>
           <label for="cpf" class="form-label">CPF do representante</label>
-          <div class="input-group">
-            <input type="text" class="form-control" id="cpf" [(ngModel)]="pessoa.cpf" mask="CPF_CNPJ" aria-describedby="inputGroupPrepend" formControlName="cpf">
+          <input type="text" class="form-control" id="cpfRepresentante" [(ngModel)]="pessoa.cpf" mask="CPF_CNPJ" aria-describedby="inputGroupPrepend" formControlName="cpf">
+          <div *ngIf="formPessoa.get('cpf')?.errors?.cpfNotValid" style="color:var(--bs-form-invalid-color);" class="invalid-feedback cpf">
+            CPF inválido
           </div>
         </div>
         <div class="col-md-3" *ngIf="documento.length === 14 && cliente" [@slideLeftToRight]>
           <label for="rg" class="form-label">RG do representante</label>
-          <div class="input-group">
-            <input type="text" class="form-control" id="rg" [(ngModel)]="pessoa.rg" aria-describedby="inputGroupPrepend" formControlName="rg">
+          <input type="text" class="form-control" id="rg" [(ngModel)]="pessoa.rg" aria-describedby="inputGroupPrepend" formControlName="rg">
+          <div *ngIf="formPessoa.get('rg')?.errors?.rgInvalid" class="invalid-feedback rg" style="color:var(--bs-form-invalid-color);">
+            RG inválido
           </div>
         </div>
       </div>
       <div class="row funcionario" *ngIf="funcionario" [@slideLeftToRight]>
         <div class="col-md-4">
           <label for="pis" class="form-label">PIS</label>
-          <div class="input-group has-validation">
-            <input type="text" class="form-control" id="pis" [(ngModel)]="pessoa.pis" aria-describedby="inputGroupPrepend" formControlName="pis" [required]="pis.invalid">
-          </div>
-          <div class="invalid-feedback">
+          <input type="text" class="form-control" id="pis" mask="000.00000.00-0" [(ngModel)]="pessoa.pis" aria-describedby="inputGroupPrepend" formControlName="pis" [required]="pis.invalid">
+          <div *ngIf="!pis.value && pis.invalid" class="invalid-feedback">
             Campo obrigatório
+          </div>
+          <div *ngIf="pis.value && formPessoa.get('pis')?.errors?.pisNotValid" class="invalid-feedback pis" style="color:var(--bs-form-invalid-color);">
+            Pis inválido
           </div>
         </div>
         <div class="col-md-4">
           <label for="salario" class="form-label">Salário</label>
-          <div class="input-group has-validation">
-            <input type="text" class="form-control" id="salario" aria-describedby="inputGroupPrepend" [(ngModel)]="pessoa.salario" formControlName="salario" [required]="salario.invalid">
-          </div>
+            <input type="text" class="form-control" id="salario" currencyMask [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', align: 'left'}" aria-describedby="inputGroupPrepend" [(ngModel)]="pessoa.salario" formControlName="salario" [required]="salario.invalid">
           <div class="invalid-feedback">
             Campo obrigatório
           </div>
         </div>
         <div class="col-md-4">
           <label for="cnpj" class="form-label">Cargo</label>
-          <div class="input-group has-validation">
             <input type="text" class="form-control" id="cargo" aria-describedby="inputGroupPrepend" formControlName="cargo" [(ngModel)]="pessoa.cargo" [required]="cargo.invalid">
-          </div>
           <div class="invalid-feedback">
             Campo obrigatório
           </div>
@@ -125,29 +127,36 @@
       <div class="row">
         <div class="col-md-3" *ngIf="(cliente || funcionario) && documento.length === 11">
           <label for="dataNascimento" class="form-label">Data de Nascimento</label>
-          <div class="input-group has-validation">
             <input type="date" class="form-control" id="dataNascimento" aria-describedby="inputGroupPrepend" formControlName="dataNascimento" [(ngModel)]="pessoa.dataNascimento" [required]="dataNascimento.invalid">
+          <div *ngIf="!dataNascimento.value && dataNascimento.invalid" class="invalid-feedback">
+            Campo obrigatório
+          </div>
+          <div *ngIf="formPessoa.get('dataNascimento')?.errors?.lessThan18Years" class="invalid-feedback menorIdade">
+            Somente pessoas com mais de 18 anos podem se cadastrar
           </div>
         </div>
         <div class="col-md-3">
           <label for="email" class="form-label">E-mail</label>
-          <div class="input-group has-validation">
-            <input type="text" class="form-control" id="email" aria-describedby="inputGroupPrepend" formControlName="email" [(ngModel)]="pessoa.email" [required]="email.invalid">
+          <input type="text" class="form-control" id="email" aria-describedby="inputGroupPrepend" formControlName="email" [(ngModel)]="pessoa.email" [required]="email.invalid">
+          <div *ngIf="formPessoa.get('email')?.errors?.emailInvalido" class="invalid-feedback email">
+            Email inválido
           </div>
         </div>
         <div class="col-md-3">
           <label for="telefone1" class="form-label">Telefone 1</label>
-          <div class="input-group has-validation">
             <input type="text" class="form-control" mask="(00) 0 0000-0000" id="telefone1" [(ngModel)]="pessoa.telefone1" aria-describedby="inputGroupPrepend" formControlName="telefone1" [required]="telefone1.invalid">
-          </div>
-          <div class="invalid-feedback">
+          <div *ngIf="!telefone1.value && telefone1.invalid" class="invalid-feedback">
             Campo obrigatório
+          </div>
+          <div *ngIf="formPessoa.get('telefone1')?.errors?.telefoneInvalido" class="invalid-feedback telefone1">
+            Telefone Inválido
           </div>
         </div>
         <div class="col-md-3">
           <label for="telefone2" class="form-label">Telefone 2</label>
-          <div class="input-group has-validation">
-            <input type="text" class="form-control" id="telefone2" mask="(00) 0 0000-0000" [(ngModel)]="pessoa.telefone2" aria-describedby="inputGroupPrepend" formControlName="telefone2">
+          <input type="text" class="form-control" id="telefone2" mask="(00) 0 0000-0000" [(ngModel)]="pessoa.telefone2" aria-describedby="inputGroupPrepend" formControlName="telefone2">
+          <div *ngIf="formPessoa.get('telefone2')?.errors?.telefoneInvalido" class="invalid-feedback telefone2">
+            Telefone Inválido
           </div>
         </div>
       </div>
@@ -190,7 +199,7 @@
       <div class="col-md-8 mx-auto" style="display: flex; justify-content: center;">
         <button class="btn btn-danger me-4" type="button">Cancelar</button>
         <button class="btn btn-primary me-4" type="button">Teste</button>
-        <button class="btn btn-primary" type="submit">Cadastrar Pessoa</button>
+        <button class="btn btn-primary" type="submit">{{ehAlteracao ? "Salvar Alterações" : "Cadastrar Pessoa"}}</button>
       </div>
     </div>
 
@@ -210,7 +219,7 @@
               <div class="col-md-3">
                 <label for="estado" class="form-label"> Estado </label>
                 <ng-select class="customEstado"  name="estado" [(ngModel)]="idEstado" [virtualScroll]="true" id="estado"
-                           (scrollToEnd)="carregarEstados()" (change)="selecionarEstado($event)" formControlName="estado" required>
+                            (change)="selecionarEstado($event)" formControlName="estado" required>
                   <ng-option *ngFor="let estado of estados" [value]="estado.id">{{ estado.uf + " - " + estado.nome }}</ng-option>
                 </ng-select>
                 <div class="invalid-feedback">
@@ -221,7 +230,7 @@
                 <label for="cidade" class="form-label">Cidade</label>
                 <ng-select class="customCidade"  name="cidade" [(ngModel)]="Endereco.idCidade" formControlName="idCidade"
                            [searchable]="true"
-                           (search)="pesquisarEstados1($event)"
+                           (search)="pesquisarCidades($event)"
                            (change)="selecionarCidade($event)"
                            placeholder="Digite ao menos 4 letras"
                            notFoundText="Não foram encontradas cidades"
@@ -282,3 +291,36 @@
     </div>
   </div>
 </div>
+
+<!--<div id="modalSalvoSucesso" class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Pessoa salva com sucesso</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Continuar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modalErro" class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Erro ao salvar Pessoa</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>{{erro}}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>-->

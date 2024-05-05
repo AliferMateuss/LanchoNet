@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Entidades.Entidades;
 
@@ -50,6 +51,13 @@ public partial class LanchoNetContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+        var keysProperties = modelBuilder.Model.GetEntityTypes().Select(x => x.FindPrimaryKey()).SelectMany(x => x.Properties);
+        foreach (var property in keysProperties)
+        {
+            property.ValueGenerated = ValueGenerated.OnAdd;
+        }
+
         modelBuilder.Entity<Cidade>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("cidade_pkey");
@@ -57,7 +65,7 @@ public partial class LanchoNetContext : DbContext
             entity.ToTable("Cidade");
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
+                .ValueGeneratedOnAdd()
                 .HasColumnName("Id");
             entity.Property(e => e.CodTom)
                 .HasDefaultValueSql("0")
@@ -83,7 +91,7 @@ public partial class LanchoNetContext : DbContext
 
             entity.ToTable("Compra");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
             entity.HasOne(d => d.Pessoa).WithMany(p => p.Compras)
                 .HasForeignKey(d => d.IdPessoa)
@@ -107,7 +115,7 @@ public partial class LanchoNetContext : DbContext
 
             entity.ToTable("ContasAPagar");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
             entity.HasOne(d => d.Compra).WithMany(p => p.ContasAPagar)
                 .HasForeignKey(d => d.IdCompra)
@@ -121,7 +129,7 @@ public partial class LanchoNetContext : DbContext
 
             entity.ToTable("ContasAReceber");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Status).HasColumnType("char");
 
             entity.HasOne(d => d.Pessoa).WithMany(p => p.ContasAReceber)
@@ -141,7 +149,7 @@ public partial class LanchoNetContext : DbContext
 
             entity.ToTable("Endereco");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Bairro).HasMaxLength(50);
             entity.Property(e => e.Cep).HasColumnName("CEP");
             entity.Property(e => e.Complemento).HasMaxLength(100);
@@ -165,7 +173,7 @@ public partial class LanchoNetContext : DbContext
             entity.ToTable("Estado", tb => tb.HasComment("Unidades Federativas"));
 
             entity.Property(e => e.Id)
-                .ValueGeneratedNever()
+                .ValueGeneratedOnAdd()
                 .HasColumnName("Id");
             entity.Property(e => e.Ibge).HasColumnName("Ibge");
             entity.Property(e => e.Nome)
@@ -182,7 +190,7 @@ public partial class LanchoNetContext : DbContext
 
             entity.ToTable("GrupoUsuario");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Nome).HasMaxLength(50);
         });
 
@@ -192,7 +200,7 @@ public partial class LanchoNetContext : DbContext
 
             entity.ToTable("ItensCompra");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
             entity.HasOne(d => d.Compra).WithMany(p => p.ItensCompra)
                 .HasForeignKey(d => d.IdCompra)
@@ -209,7 +217,7 @@ public partial class LanchoNetContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("ItensVenda_pkey");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Status).HasColumnType("char");
 
             entity.HasOne(d => d.Produto).WithMany(p => p.ItensVenda)
@@ -229,15 +237,15 @@ public partial class LanchoNetContext : DbContext
 
             entity.ToTable("Mesa");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Status).HasColumnType("char");
         });
 
         modelBuilder.Entity<Pessoa>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("Pessoas_pkey");
+            entity.HasKey(e => e.Id).HasName("Id");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Cargo).HasColumnType("character varying");
             entity.Property(e => e.Cnpj)
                 .HasColumnType("character varying")
@@ -259,7 +267,13 @@ public partial class LanchoNetContext : DbContext
                 .HasColumnName("RG");
             entity.Property(e => e.Telefone1).HasMaxLength(15);
             entity.Property(e => e.Telefone2).HasMaxLength(15);
-            entity.Property(e => e.TipoPessoa).HasColumnType("char");
+            entity.Property(e => e.Cliente);
+            entity.Property(e => e.Fornecedor);
+            entity.Property(e => e.Funcionario);
+            entity.HasMany(p => p.Enderecos)
+        .WithOne(e => e.Pessoa)
+        .OnDelete(DeleteBehavior.Cascade);
+
         });
 
         modelBuilder.Entity<Produto>(entity =>
@@ -268,7 +282,7 @@ public partial class LanchoNetContext : DbContext
 
             entity.ToTable("Produto");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Nome).HasMaxLength(100);
         });
 
@@ -278,7 +292,7 @@ public partial class LanchoNetContext : DbContext
 
             entity.ToTable("TipoPagamento");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Nome).HasMaxLength(50);
         });
 
@@ -288,7 +302,7 @@ public partial class LanchoNetContext : DbContext
 
             entity.ToTable("Usuario");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Senha).HasMaxLength(100);
             entity.Property(e => e.Usuario1)
                 .HasMaxLength(100)
@@ -309,7 +323,7 @@ public partial class LanchoNetContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("Venda_pkey");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.IdMesa).ValueGeneratedOnAdd();
             entity.Property(e => e.Status).HasColumnType("char");
 

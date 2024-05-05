@@ -1,23 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace Entidades.Entidades;
 
 public partial class Pessoa
 {
-    public long Id { get; set; }
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public long? Id { get; set; }
 
-    public string Nome { get; set; } = null!;
+    public string? Nome { get; set; } = null!;
 
-    public DateTime DataNascimento { get; set; }
+    public DateTime? DataNascimento { get; set; }
 
     public string? Telefone1 { get; set; }
 
     public string? Telefone2 { get; set; }
 
-    public char TipoPessoa { get; set; }
-
-    public string Email { get; set; } = null!;
+    public string? Email { get; set; } = null!;
 
     public string? Cpf { get; set; }
 
@@ -30,6 +32,9 @@ public partial class Pessoa
     public string? RazaoSocial { get; set; }
 
     public bool Ativo { get; set; }
+    public bool Cliente { get; set; }
+    public bool Fornecedor { get; set; }
+    public bool Funcionario { get; set; }
 
     public double? Salario { get; set; }
 

@@ -25,5 +25,12 @@ namespace Controllers.Controllers
         {
             return CidadeNegocio.BuscaCidadesPorEstadoETermo(termo, estadoId);
         }
+
+        [HttpGet("RecuperaCidadePorId")]
+        public CidadeDto RecuperaCidadePorId(long id)
+        {
+            return CidadeNegocio.RecuperaCidadePorId(id);
+        }
+
     }
 }
