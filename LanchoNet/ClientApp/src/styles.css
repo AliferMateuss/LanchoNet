@@ -28,3 +28,37 @@ code {
 .mat-mdc-header-row {
   z-index: 0 !important;
 }
+
+.top10ClassesFodas {
+    display: flex;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+.cdk-overlay-container .cdk-global-overlay-wrapper {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+[class*='mat-mdc-table'] > [class*='mat-column']:not(:last-child) {
+  border-right: 1px solid currentColor;
+}
+
+.noDataRow {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.mat-mdc-paginator-container {
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}
+

@@ -7,7 +7,7 @@ public partial class Usuario
 {
     public long Id { get; set; }
 
-    public string Usuario1 { get; set; }
+    public string UsuarioNome { get; set; }
 
     public string Senha { get; set; }
 

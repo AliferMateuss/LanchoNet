@@ -87,7 +87,7 @@ export class PessoasComponent implements OnInit {
         this.documentoOK = true;
         this.documentoPassou = true;
         this.tipoPessoa = true;
-        this.ehAlteracao = true;
+        this.ehAlteracao = true; 
         this.formPessoa = new FormGroup({
           nome: new FormControl(this.pessoa.nome),
           dataNascimento: new FormControl(this.pessoa.dataNascimento),
@@ -300,6 +300,10 @@ export class PessoasComponent implements OnInit {
   }
 
   salvarPessoa() {
+
+    const form = document.querySelector('.needs-validation') as HTMLFormElement;
+    form.classList.remove('was-validated');
+
     Object.keys(this.formPessoa.controls).forEach((campo) => {
       this.formPessoa.get(campo)?.markAsTouched();
       this.formPessoa.get(campo)?.markAsDirty();

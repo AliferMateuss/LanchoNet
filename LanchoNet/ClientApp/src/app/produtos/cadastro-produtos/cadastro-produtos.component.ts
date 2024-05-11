@@ -1,25 +1,72 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, Inject } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Component, Inject, RendererFactory2, TemplateRef, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-
+import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { ModalComponent } from '../../modal/modal.component';
+declare var $: any;
 @Component({
   selector: 'app-cadastro-produtos',
   templateUrl: './cadastro-produtos.component.html',
-  styleUrls: ['./cadastro-produtos.component.css']
+  styleUrls: ['./cadastro-produtos.component.css'],
 })
 export class CadastroProdutosComponent {
   produto: Produtos = new Produtos();
   formProduto?: FormGroup;
   imageUrl: string | ArrayBuffer | null = null;
-  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { }
+  ehAlteracao: boolean = false;
 
-  ngAfterViewInit() {
+
+  tituloModal: string = "Salvo com sucesso";
+  erro: boolean = false;
+
+  @ViewChild('modalResposta') modalResposta!: TemplateRef<any>;
+
+  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string, private route: ActivatedRoute,
+    private dialog: MatDialog, private router: Router) { }
+
+  ngOnInit() {
+    var id = this.route.snapshot.paramMap.get('id?');
+    console.log(this.route)
+    if (id) {
+      const params = new HttpParams()
+        .set("id", id)
+      this.http.get<Produtos>(this.baseUrl + 'api/Produto/RertornaPorId', { params }).subscribe(data => {
+        this.produto = data;
+        if (data.imagem)
+          this.imageUrl = "data:image;base64," + data.imagem;
+
+        this.ehAlteracao = true;
+
+      }, error => {
+        this.openDialog("Erro ao recuperar produto", error, "Voltar", true);
+      });
+    }
+
     this.formProduto = new FormGroup({
       nome: new FormControl(this.produto.nome, [Validators.required]),
       quantidade: new FormControl(this.produto.quantidade, [Validators.required]),
       preco: new FormControl(this.produto.preco, [Validators.required]),
       precoCompra: new FormControl(this.produto.precoCompra, [Validators.required])
     }, [this.validacaoPrecos()]);
+
+  }
+
+  openDialog(titulo: string, mensagem: string, botao: string, erro: boolean): void {
+    const dialogRef = this.dialog.open(ModalComponent, {
+      panelClass: 'top10ClassesFodas',
+      hasBackdrop: true,
+      data: {titulo: titulo, mensagem: mensagem, botao:botao, erro:erro }
+    });
+    if (erro) {
+
+    } else {
+      dialogRef.afterClosed().subscribe(result => {
+        this.router.navigate(['/../listaProdutos']);
+      });
+    }
+
   }
 
   validacaoPrecos(): ValidatorFn {
@@ -41,24 +88,32 @@ export class CadastroProdutosComponent {
       form.classList.add('was-validated');
 
       if (this.formProduto.errors?.invalidComparison) {
-          var preco = document.querySelector('#precoCompra') as HTMLFormElement;
-          preco.style.borderColor = 'var(--bs-form-invalid-color)';
-          var input = document.querySelector('.invalid-feedback.preco') as HTMLFormElement;
-          input.style.display = 'block';
+        var preco = document.querySelector('#precoCompra') as HTMLFormElement;
+        preco.style.borderColor = 'var(--bs-form-invalid-color)';
+        var input = document.querySelector('.invalid-feedback.preco') as HTMLFormElement;
+        input.style.display = 'block';
       } else {
         var data = document.querySelector('#precoCompra') as HTMLFormElement;
-          data.style.borderColor = 'var(--bs-border-color)';
+        data.style.borderColor = 'var(--bs-border-color)';
         var input = document.querySelector('.invalid-feedback.preco') as HTMLFormElement;
-          if (input)
-            input.style.display = 'none';
+        if (input)
+          input.style.display = 'none';
       }
       return;
     } else {
-      /*      this.http.post<any>(this.baseUrl + 'Produtos/Salvar', this.produto);*/
-      console.log(this.produto)
-      console.log(this.formProduto)
+      if (this.ehAlteracao) {
+        this.http.post<any>(this.baseUrl + 'api/Produto/Atualizar', this.produto).subscribe(data => {
+          this.openDialog("Alteração realizada com sucesso", "", "Continuar", false);
+        }, error => this.openDialog(this.ehAlteracao ? "Erro ao salvar alterações" : "Erro ao cadastrar", error, "Voltar", true));
+      } else {
+        this.http.post<any>(this.baseUrl + 'api/Produto/Salvar', this.produto).subscribe(data => {
+          this.openDialog("Cadastro realizado com sucesso", "", "Continuar", false);
+        }, error => this.openDialog(this.ehAlteracao ? "Erro ao salvar alterações" : "Erro ao cadastrar", error, "Voltar", true));
+      }
     }
+
   }
+
 
   onFileSelected(event: any): void {
     const file: File = event.target.files[0];
@@ -67,31 +122,27 @@ export class CadastroProdutosComponent {
       reader.readAsDataURL(file);
       reader.onload = () => {
         this.imageUrl = reader.result;
+        this.produto.imagem = reader.result as string;
       };
-      this.produto.imagem = file;
     } else {
       this.produto.imagem = null;
     }
   }
 
-  dataURLtoFile(dataURL: string, filename: string): File {
-    const arr = dataURL.split(',');
-    const mime = arr[0].match(/:(.*?);/)?.[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new File([u8arr], filename, { type: mime });
+  fileToFormFile(file: File): FormData {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    return formData;
   }
 }
 
 
 class Produtos {
+  id: number | null = null;
   nome: string | null = null;
   quantidade: number | null = null;
   preco: number | null = null;
   precoCompra: number | null = null;
-  imagem: File | null = null;
+  imagem: string | null = null;
 }
+

@@ -6,7 +6,7 @@ namespace Entidades.Entidades;
 
 public partial class ProdutoDto
 {
-    public long Id { get; set; }
+    public long? Id { get; set; }
 
     public string Nome { get; set; } = null!;
 
@@ -14,7 +14,7 @@ public partial class ProdutoDto
 
     public double Preco { get; set; }
     public double PrecoCompra { get; set; }
-    public IFormFile Imagem { get; set; }
+    public string? Imagem { get; set; }
 
     public virtual ICollection<ItensCompraDto>? ItensCompras { get; set; }
 

@@ -189,6 +189,9 @@
 
             <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" style="background-color: white;"></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            <tr class="mat-row noDataRow" *matNoDataRow>
+              <td class="mat-cell" colspan="4">Nenhum endereço cadastrado!</td>
+            </tr>
           </mat-table>
           <div class="col-12" style="padding-top: 15px;">
             <button class="btn btn-primary" type="button" (click)="adicionarEndereco()" data-bs-toggle="modal" data-bs-target="#modalEndereco">Cadastrar endereço</button>

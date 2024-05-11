@@ -27,7 +27,9 @@
 
   <ItemGroup>
     <Folder Include="ClientApp\.angular\" />
-    <Folder Include="ClientApp\src\app\produtos\" />
+    <Folder Include="ClientApp\src\app\grupo-usuarios\" />
+    <Folder Include="ClientApp\src\app\mesa\" />
+    <Folder Include="ClientApp\src\app\tipo-pagamento\" />
   </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

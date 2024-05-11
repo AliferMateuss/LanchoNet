@@ -139,6 +139,23 @@ html {
     stroke-dashoffset: -32.42;
   }
 
-.nav-item:hover{
-    background-color: #404040;
+.has-submenu:hover {
+  background-color: #404040;
+}
+
+.submenu-active {
+  background-color: #404040;
+}
+
+
+  .submenu li:hover {
+    background-color: #555;
+  }
+
+.submenuVisible {
+  display: block;
+}
+
+.menuItem:hover {
+  background-color: #404040;
 }

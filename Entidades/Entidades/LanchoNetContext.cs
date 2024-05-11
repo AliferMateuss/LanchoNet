@@ -234,7 +234,7 @@ public partial class LanchoNetContext : DbContext
         modelBuilder.Entity<Mesa>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Mesa_pkey");
-
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.ToTable("Mesa");
 
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
@@ -289,7 +289,6 @@ public partial class LanchoNetContext : DbContext
         modelBuilder.Entity<TipoPagamento>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("TipoPagamento_pkey");
-
             entity.ToTable("TipoPagamento");
 
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
@@ -299,12 +298,12 @@ public partial class LanchoNetContext : DbContext
         modelBuilder.Entity<Usuario>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Usuario_pkey");
-
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.ToTable("Usuario");
 
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Senha).HasMaxLength(100);
-            entity.Property(e => e.Usuario1)
+            entity.Property(e => e.UsuarioNome)
                 .HasMaxLength(100)
                 .HasColumnName("Usuario");
 
@@ -322,9 +321,7 @@ public partial class LanchoNetContext : DbContext
         modelBuilder.Entity<Venda>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("Venda_pkey");
-
             entity.Property(e => e.Id).ValueGeneratedOnAdd();
-            entity.Property(e => e.IdMesa).ValueGeneratedOnAdd();
             entity.Property(e => e.Status).HasColumnType("char");
 
             entity.HasOne(d => d.Mesa).WithMany(p => p.Venda)
