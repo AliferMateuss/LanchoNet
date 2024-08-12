@@ -1,1 +1,24 @@
-<p>cadastro-tipos-pagamentos works!</p>
+<h1 class="text-center">Cadastro de Tipo de Pagamento</h1>
+<div *ngIf="formTipoPagamento != undefined">
+  <form class="row g-3 needs-validation" (ngSubmit)="salvarTipoPagamento()" [formGroup]="formTipoPagamento" #formDir="ngForm">
+    <div>
+      <div class="row" style="margin-bottom:40px;">
+        <div class="col-md-6">
+          <label for="nome" class="form-label">Nome</label>
+          <input type="text" class="form-control" id="nome" [(ngModel)]="tipoPagamento.nome" formControlName="nome" required>
+          <div class="invalid-feedback">
+            Campo obrigatório
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="juros" class="form-label">Juros</label>
+          <input type="text" class="form-control" id="juros" [(ngModel)]="tipoPagamento.juros" formControlName="juros">
+        </div>
+      </div>
+      <div class="col-md-8 mx-auto" style="display: flex; justify-content: center;">
+        <button class="btn btn-danger me-4" type="button" [routerLink]="['/../listaTipoPagamentos']">Cancelar</button>
+        <button class="btn btn-primary" type="submit">Salvar</button>
+      </div>
+    </div>
+  </form>
+</div>

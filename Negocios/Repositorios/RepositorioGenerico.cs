@@ -9,19 +9,19 @@ namespace Entidades.Repositorios
 
     public class RepositorioGenerico<TEntity, TDto> where TEntity : class
     {
-        public readonly LanchoNetContext _context;
+        public readonly PostgresContexto _context;
         public readonly DbSet<TEntity> _dbSet;
         public IMapper _mapper;
         public TEntity _entity;
         public TDto _dto;
 
-        public RepositorioGenerico(LanchoNetContext context)
+        public RepositorioGenerico(PostgresContexto context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _dbSet = _context.Set<TEntity>();
         }
 
-        public RepositorioGenerico() : this(new LanchoNetContext()) { }
+        public RepositorioGenerico() : this(new PostgresContexto()) { }
 
         public IEnumerable<TDto> BuscaTodos()
         {

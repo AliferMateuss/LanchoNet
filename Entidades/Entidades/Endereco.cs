@@ -10,8 +10,6 @@ public partial class Endereco
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long? Id { get; set; }
-
-    [ForeignKey("Pessoa")]
     public long? IdPessoa { get; set; }
 
     public long? IdCidade { get; set; }
@@ -26,7 +24,9 @@ public partial class Endereco
 
     public string Bairro { get; set; } = null!;
 
+    [ForeignKey("IdCidade")]
     public virtual Cidade? Cidade { get; set; } = null!;
 
+    [ForeignKey("IdPessoa")]
     public virtual Pessoa? Pessoa { get; set; } = null!;
 }

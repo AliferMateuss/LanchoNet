@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Entidades.Contexto;
 using Entidades.Entidades;
 using Entidades.Repositorios;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ namespace Negocios.Repositorios
 {
     public class EnderecoRepositorio: RepositorioGenerico<Endereco, EnderecoDto>
     {
-        public EnderecoRepositorio(LanchoNetContext contexto):base(contexto) { }
+        public EnderecoRepositorio(PostgresContexto contexto):base(contexto) { }
 
 
         public List<EnderecoDto> RecuperarTodosEnderecosPessoa(long id)

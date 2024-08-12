@@ -13,11 +13,11 @@ namespace Negocios.Repositorios
             List<Cidade> resultado;
             if (!string.IsNullOrEmpty(termo))
             {
-                resultado = _context.Cidades.Where(x => x.EstadoId == idestado && x.Nome.ToLower().StartsWith(termo.ToLower())).ToList();
+                resultado = _context.Cidade.Where(x => x.EstadoId == idestado && x.Nome.ToLower().StartsWith(termo.ToLower())).ToList();
             }
             else
             {
-                resultado = _context.Cidades.Where(x => x.EstadoId == idestado).ToList() ;
+                resultado = _context.Cidade.Where(x => x.EstadoId == idestado).ToList() ;
             }
 
 
@@ -28,7 +28,7 @@ namespace Negocios.Repositorios
 
         public CidadeDto RecuperaCidadePorId(long id)
         {
-            var cidade = _context.Cidades.Where(x => x.Id == id).FirstOrDefault();
+            var cidade = _context.Cidade.Where(x => x.Id == id).FirstOrDefault();
             var mapperConfig = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<Cidade, CidadeDto>().ForMember(x => x.Enderecos, opt => opt.Ignore()).ForMember(x => x.Estado, opt => opt.Ignore()).ForMember(x => x.LatLon, opt => opt.Ignore())

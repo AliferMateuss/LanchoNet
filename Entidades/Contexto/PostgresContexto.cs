@@ -8,7 +8,7 @@ namespace Entidades.Contexto
         private static string _server = "localhost";
         private static string _database = "LanchoNet";
         private static string _username = "postgres";
-        private static string _password = "sup01";
+        private static string _password = "postgres";
 
         private static string connectionString = $@"Host={_server};Database={_database};Username={_username};Password={_password}";
 
@@ -43,15 +43,22 @@ namespace Entidades.Contexto
                 .WithOne(v => v.Pessoa)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Pessoa>()
+    .HasMany(c => c.Enderecos)
+    .WithOne(v => v.Pessoa)
+    .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Venda>()
               .HasMany(c => c.ItensVenda)
               .WithOne(v => v.Venda)
               .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Venda>()
-                .HasMany(c => c.ContasAReceber)
-                .WithOne(v => v.Venda)
+            modelBuilder.Entity<Compra>()
+                .HasMany(c => c.ContasAPagar)
+                .WithOne(v => v.Compra)
                  .OnDelete(DeleteBehavior.Cascade);
+
+
         }
     }
 }

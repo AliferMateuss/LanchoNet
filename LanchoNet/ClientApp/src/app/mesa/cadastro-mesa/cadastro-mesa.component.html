@@ -1,1 +1,37 @@
-<p>cadastro-mesa works!</p>
+<h1 class="text-center">Cadastro de Mesas</h1>
+<div *ngIf="formMesa != undefined">
+  <form class="row g-3 needs-validation" (ngSubmit)="salvarMesa()" [formGroup]="formMesa" #formDir="ngForm">
+    <div>
+      <div class="row" style="margin-bottom:40px;">
+        <div class="col-md-6">
+          <label for="numero" class="form-label">Número</label>
+          <input type="text" class="form-control" id="numero" [(ngModel)]="mesa.numero" formControlName="numero" required>
+          <div class="invalid-feedback">
+            Campo obrigatório
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="status" class="form-label">Status</label>
+          <input type="text" class="form-control" id="status" [(ngModel)]="mesa.status" formControlName="status">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <label for="capacidade" class="form-label">Capacidade</label>
+          <input type="text" class="form-control" id="capacidade" [(ngModel)]="mesa.capacidade" formControlName="capacidade" required>
+          <div class="invalid-feedback">
+            Campo obrigatório
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="totalPessoas" class="form-label">Total de Pessoas</label>
+          <input type="text" class="form-control" id="totalPessoas" [(ngModel)]="mesa.totalPessoas" formControlName="totalPessoas">
+        </div>
+      </div>
+      <div class="col-md-8 mx-auto" style="display: flex; justify-content: center;">
+        <button class="btn btn-danger me-4" type="button" [routerLink]="['/../listaMesas']">Cancelar</button>
+        <button class="btn btn-primary" type="submit">Salvar</button>
+      </div>
+    </div>
+  </form>
+</div>
